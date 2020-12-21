@@ -570,13 +570,37 @@ unsigned short additional_valid_chanspecs[] = {
 	CH20MHZ_CHSPEC(211),
 	CH20MHZ_CHSPEC(212),
 	CH20MHZ_CHSPEC(213),
-    CH20MHZ_CHSPEC(214),
-    CH20MHZ_CHSPEC(215),
-    CH20MHZ_CHSPEC(216),  
+        CH20MHZ_CHSPEC(214),
+    	CH20MHZ_CHSPEC(215),
+    	CH20MHZ_CHSPEC(216),  
 //    216 is max channel or issues with kernel driver compares
 #if (NEXMON_CHIP == CHIP_VER_BCM43455c0)
-    0xe02a, // 36/80
-    0xe29b, // 157/80
+//    	0xe02a, // 36/80
+//    	0xe29b, // 157/80
+	0xe02a,
+	0xe03a,
+	0xe06a,
+	0xe07a,
+	0xe08a,
+	0xe09b,
+	0xe12a,
+	0xe13a,
+	0xe16a,
+	0xe17a,
+	0xe18a,
+	0xe19b,
+	0xe22a,
+	0xe23a,
+	0xe26a,
+	0xe27a,
+	0xe28a,
+	0xe29b,
+	0xe32a,
+	0xe33a,
+	0xe36a,
+	0xe37a,
+	0xe38a,
+	0xe39b,
 #endif
 };
 
