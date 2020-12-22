@@ -2,11 +2,10 @@
 RASPBERRY PI4 UPDATES
 This is a Fork.
 Currently no-ir and radar is turned off for all channels,2.4ghz has 12,13,14 enabled all channels 40vht,
-5ghz has channels 16-216!80mhz a mix of 20/40/80mhz look at comments to adjust. It also has all the nexmon monitor stuff. Its easy to edit
-use the patches/bcm43455c0/7_45_189/nexmon folder for the build.Everything is in src/regulations.c Tho ive found adding to many things causes issues and im pushing
+5ghz has channels 16-183 anything over 183 would start recycling chspecs from lower channels, even 2.4ghz ones! The current channels a mix of 20/40/80mhz look at comments to adjust and check with iw phy0 channels
+. It also has all the nexmon monitor stuff. Its easy to edit use the patches/bcm43455c0/7_45_189/nexmon folder for the build.Everything is in src/regulations.c Tho ive found adding to many things causes issues and im pushing
 it now, so Before you start adding anything remove anything you dont need first.
-This does require the nexmon patches and the channels/reg_rules etc to be added to kernel driver. I have a (currently 5.10) kernel with all
-those patches and more. 
+This does require the nexmon patches and the channels/reg_rules etc to be added to kernel driver. I have a (currently 5.10) kernel with all those patches and more. 
 https://github.com/bm16ton/raspberrypi-kernel/
 
 ![NexMon logo](https://github.com/seemoo-lab/nexmon/raw/master/gfx/nexmon.png)
