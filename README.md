@@ -12,7 +12,7 @@ https://github.com/bm16ton/raspberrypi-kernel/
 
 This now has a arm64 version to be able to build directly on arm64 raspberrypi 4.
 
-source setup_env-arm64.sh
+source setup_env.sh
 make
 cd patches/bcm43455c0/7_45_189-arm64/nexmon
 make
