@@ -10,6 +10,17 @@ https://github.com/bm16ton/raspberrypi-kernel/
 
 ![NexMon logo](https://github.com/seemoo-lab/nexmon/raw/master/gfx/nexmon.png)
 
+This now has a arm64 version to be able to build directly on arm64 raspberrypi 4.
+
+source setup_env-arm64.sh
+make
+cd patches/bcm43455c0/7_45_189-arm64/nexmon
+make
+
+also in the 7_45_189-arm64 folder is a slightly edited nexutil for arm64 (have only used to set/check chspecs) and it also portible making it easier to spread to multiple machines all includes are in folder 
+now.
+
+
 # What is nexmon?
 Nexmon is our C-based firmware patching framework for Broadcom/Cypress WiFi chips 
 that enables you to write your own firmware patches, for example, to enable monitor

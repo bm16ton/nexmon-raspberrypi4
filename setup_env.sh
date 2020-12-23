@@ -1,4 +1,7 @@
 OLD_PWD=$(pwd)
+cp buildtools/gcc-arm-none-eabi-5_4-2016q2-linux-armv7l/lib/gcc/arm-none-eabi/5.4.1/cc1.og buildtools/gcc-arm-none-eabi-5_4-2016q2-linux-armv7l/lib/gcc/arm-none-eabi/5.4.1/cc1
+cp buildtools/gcc-arm-none-eabi-5_4-2016q2-linux-armv7l/arm-none-eabi/bin/as.og buildtools/gcc-arm-none-eabi-5_4-2016q2-linux-armv7l/arm-none-eabi/bin/as
+
 cd $(dirname ${BASH_SOURCE[0]})
 
 export ARCH=arm
