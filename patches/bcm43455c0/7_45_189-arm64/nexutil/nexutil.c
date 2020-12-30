@@ -90,6 +90,7 @@ char            *ifname = "wlan0";
 unsigned char   set_monitor = 0;
 unsigned char   set_monitor_value = 0;
 unsigned char   get_monitor = 0;
+unsigned char   get_pm = 0;
 unsigned char   set_promisc = 0;
 unsigned char   set_promisc_value = 0;
 unsigned char   get_promisc = 0;
@@ -127,6 +128,7 @@ static char doc[] = "nexutil -- a program to control a nexmon firmware for broad
 static struct argp_option options[] = {
     {"interface-name", 'I', "CHAR", 0, "Set interface name (default: wlan0)"},
     {"monitor", 'm', "INT", OPTION_ARG_OPTIONAL, "Set/Get monitor mode"},
+    {"get-pm", 'P', 0, 0, "Read powersave option directly from firmware"},
     {"promisc", 'p', "INT", OPTION_ARG_OPTIONAL, "Set/Get promiscuous mode"},
     {"scansuppress", 'c', "INT", OPTION_ARG_OPTIONAL, "Set/Get scan suppress setting to avoid scanning"},
     {"disassociate", 'd', 0, 0, "Disassociate from access point"},
@@ -163,6 +165,10 @@ parse_opt(int key, char *arg, struct argp_state *state)
             } else {
                 get_monitor = true;
             }
+            break;
+
+        case 'P':
+            get_pm = true;
             break;
 
         case 'p':
@@ -347,8 +353,10 @@ main(int argc, char **argv)
     else
 #ifdef USE_NETLINK
         nexio = nex_init_netlink();
+	printf("using netlink\n");
 #else
         nexio = nex_init_ioctl(ifname);
+        printf("using ioctl\n");
 #endif
 
     if (set_monitor) {
@@ -377,6 +385,11 @@ main(int argc, char **argv)
     if (get_monitor) {
         ret = nex_ioctl(nexio, WLC_GET_MONITOR, &buf, 4, false);
         printf("monitor: %d\n", buf);
+    }
+
+    if (get_pm) {
+        ret = nex_ioctl(nexio, WLC_GET_PM, &buf, 4, false);
+        printf("Firmware power_save: %d\n", buf);
     }
 
     if (get_promisc) {
