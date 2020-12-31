@@ -142,7 +142,7 @@ static struct argp_option options[] = {
     {"raw-output", 'r', 0, 0, "Write raw output to stdout instead of hex dumping"},
     {"dump-wl_cnt", 'w', 0, 0, "Dump WL counters"},
     {"dump-objmem", 'o', "INT", 0, "Dumps objmem at addr INT"},
-    {"chanspec", 'k', "CHAR/INT", OPTION_ARG_OPTIONAL, "Set chanspec either as integer (e.g., 0x1001, set -i) or as string (e.g., 64/80)."},
+    {"chanspec", 'k', "CHAR/INT", OPTION_ARG_OPTIONAL, "Get chanspec or Set chanspec either as integer (e.g., 0x1001, set -i) or as string (e.g., 64/80)."},
     {"security-cookie", 'x', "INT", OPTION_ARG_OPTIONAL, "Set/Get security cookie"},
     {"use-udp-tunneling", 'X', "INT", 0, "Use UDP tunneling with security cookie INT"},
     {"broadcast-ip", 'B', "CHAR", 0, "Broadcast IP to use for UDP tunneling (default: 192.168.222.255)"},
