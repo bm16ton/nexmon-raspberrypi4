@@ -110,6 +110,8 @@ char            *custom_cmd_value = NULL;
 unsigned char   get_chanspec = 0;
 unsigned char   set_chanspec = 0;
 char            *set_chanspec_value = NULL;
+unsigned char   set_chconv = 0;
+char            *set_chconv_value = NULL;
 unsigned char   custom_cmd_value_int = false;
 unsigned char   custom_cmd_value_base64 = false;
 unsigned char   raw_output = false;
@@ -143,6 +145,7 @@ static struct argp_option options[] = {
     {"dump-wl_cnt", 'w', 0, 0, "Dump WL counters"},
     {"dump-objmem", 'o', "INT", 0, "Dumps objmem at addr INT"},
     {"chanspec", 'k', "CHAR/INT", OPTION_ARG_OPTIONAL, "Get chanspec or Set chanspec either as integer (e.g., 0x1001, set -i) or as string (e.g., 64/80)."},
+    {"chconv", 'K', "CHAR/INT", 0, "Get chanspec conversion either as integer (e.g., 0x1001, set -i) or as string eg 64/80"},
     {"security-cookie", 'x', "INT", OPTION_ARG_OPTIONAL, "Set/Get security cookie"},
     {"use-udp-tunneling", 'X', "INT", 0, "Use UDP tunneling with security cookie INT"},
     {"broadcast-ip", 'B', "CHAR", 0, "Broadcast IP to use for UDP tunneling (default: 192.168.222.255)"},
@@ -214,6 +217,12 @@ parse_opt(int key, char *arg, struct argp_state *state)
             } else {
                 get_chanspec = true;
             }
+            break;
+
+        case 'K':
+            set_chconv = true;
+            set_chconv_value = arg;
+
             break;
 
         case 'v':
@@ -353,7 +362,6 @@ main(int argc, char **argv)
     else
 #ifdef USE_NETLINK
         nexio = nex_init_netlink();
-	printf("using netlink\n");
 #else
         nexio = nex_init_ioctl(ifname);
         printf("using ioctl\n");
@@ -429,6 +437,19 @@ main(int argc, char **argv)
         else
             ret = nex_ioctl(nexio, WLC_SET_VAR, charbuf, 13, true);
     }
+
+    if (set_chconv) {
+        if (custom_cmd_value_int) {
+        char charbuf[9] = "chconv";
+        uint16 chconv = 0;
+		chconv = strtoul(set_chconv_value, NULL, 0);
+        printf("chconv: %s\n", wf_chspec_ntoa(chconv, charbuf));
+        } else {
+        printf("chanspec: %p\n", wf_chspec_aton(set_chconv_value));
+		}
+
+    }
+
 
     if (custom_cmd_set != -1) {
         custom_cmd_buf = malloc(custom_cmd_buf_len);
