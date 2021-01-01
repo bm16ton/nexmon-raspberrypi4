@@ -49,6 +49,7 @@
 #include <arpa/inet.h>
 #ifdef BUILD_ON_RPI
 #include <types.h> //not sure why it was removed, but it is needed for typedefs like `uint`
+//#include <sys/types.h>
 #include <linux/if.h>
 #else
 #include <net/if.h>
@@ -89,6 +90,7 @@ char            *ifname = "wlan0";
 unsigned char   set_monitor = 0;
 unsigned char   set_monitor_value = 0;
 unsigned char   get_monitor = 0;
+unsigned char   get_pm = 0;
 unsigned char   set_promisc = 0;
 unsigned char   set_promisc_value = 0;
 unsigned char   get_promisc = 0;
@@ -108,6 +110,8 @@ char            *custom_cmd_value = NULL;
 unsigned char   get_chanspec = 0;
 unsigned char   set_chanspec = 0;
 char            *set_chanspec_value = NULL;
+unsigned char   set_chconv = 0;
+char            *set_chconv_value = NULL;
 unsigned char   custom_cmd_value_int = false;
 unsigned char   custom_cmd_value_base64 = false;
 unsigned char   raw_output = false;
@@ -126,6 +130,7 @@ static char doc[] = "nexutil -- a program to control a nexmon firmware for broad
 static struct argp_option options[] = {
     {"interface-name", 'I', "CHAR", 0, "Set interface name (default: wlan0)"},
     {"monitor", 'm', "INT", OPTION_ARG_OPTIONAL, "Set/Get monitor mode"},
+    {"get-pm", 'P', 0, 0, "Read powersave option directly from firmware"},
     {"promisc", 'p', "INT", OPTION_ARG_OPTIONAL, "Set/Get promiscuous mode"},
     {"scansuppress", 'c', "INT", OPTION_ARG_OPTIONAL, "Set/Get scan suppress setting to avoid scanning"},
     {"disassociate", 'd', 0, 0, "Disassociate from access point"},
@@ -139,7 +144,8 @@ static struct argp_option options[] = {
     {"raw-output", 'r', 0, 0, "Write raw output to stdout instead of hex dumping"},
     {"dump-wl_cnt", 'w', 0, 0, "Dump WL counters"},
     {"dump-objmem", 'o', "INT", 0, "Dumps objmem at addr INT"},
-    {"chanspec", 'k', "CHAR/INT", OPTION_ARG_OPTIONAL, "Set chanspec either as integer (e.g., 0x1001, set -i) or as string (e.g., 64/80)."},
+    {"chanspec", 'k', "CHAR/INT", OPTION_ARG_OPTIONAL, "Get chanspec or Set chanspec either as integer (e.g., 0x1001, set -i) or as string (e.g., 64/80)."},
+    {"chconv", 'K', "CHAR/INT", 0, "Get chanspec conversion either as integer (e.g., 0x1001, set -i) or as string eg 64/80"},
     {"security-cookie", 'x', "INT", OPTION_ARG_OPTIONAL, "Set/Get security cookie"},
     {"use-udp-tunneling", 'X', "INT", 0, "Use UDP tunneling with security cookie INT"},
     {"broadcast-ip", 'B', "CHAR", 0, "Broadcast IP to use for UDP tunneling (default: 192.168.222.255)"},
@@ -162,6 +168,10 @@ parse_opt(int key, char *arg, struct argp_state *state)
             } else {
                 get_monitor = true;
             }
+            break;
+
+        case 'P':
+            get_pm = true;
             break;
 
         case 'p':
@@ -207,6 +217,12 @@ parse_opt(int key, char *arg, struct argp_state *state)
             } else {
                 get_chanspec = true;
             }
+            break;
+
+        case 'K':
+            set_chconv = true;
+            set_chconv_value = arg;
+
             break;
 
         case 'v':
@@ -348,6 +364,7 @@ main(int argc, char **argv)
         nexio = nex_init_netlink();
 #else
         nexio = nex_init_ioctl(ifname);
+        printf("using ioctl\n");
 #endif
 
     if (set_monitor) {
@@ -376,6 +393,11 @@ main(int argc, char **argv)
     if (get_monitor) {
         ret = nex_ioctl(nexio, WLC_GET_MONITOR, &buf, 4, false);
         printf("monitor: %d\n", buf);
+    }
+
+    if (get_pm) {
+        ret = nex_ioctl(nexio, WLC_GET_PM, &buf, 4, false);
+        printf("Firmware power_save: %d\n", buf);
     }
 
     if (get_promisc) {
@@ -415,6 +437,19 @@ main(int argc, char **argv)
         else
             ret = nex_ioctl(nexio, WLC_SET_VAR, charbuf, 13, true);
     }
+
+    if (set_chconv) {
+        if (custom_cmd_value_int) {
+        char charbuf[9] = "chconv";
+        uint16 chconv = 0;
+		chconv = strtoul(set_chconv_value, NULL, 0);
+        printf("chconv: %s\n", wf_chspec_ntoa(chconv, charbuf));
+        } else {
+        printf("chanspec: %p\n", wf_chspec_aton(set_chconv_value));
+		}
+
+    }
+
 
     if (custom_cmd_set != -1) {
         custom_cmd_buf = malloc(custom_cmd_buf_len);
